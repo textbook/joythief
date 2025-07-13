@@ -29,8 +29,8 @@ typecheck () {
 }
 
 case "$1" in
-  lint) lint;;
-  'lint:fix') lint --check;;
+  lint) lint --check;;
+  'lint:fix') lint;;
   ship) lint; typecheck; testCover; TOX_SKIP_ENV='py39' poetryRun tox; echo 'Ship it!';;
   test) poetryRun pytest;;
   'test:cover') testCover;;
