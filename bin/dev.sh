@@ -9,8 +9,12 @@ if [ "$#" -lt 1 ]; then
   >&2 echo "usage: ./bin/dev.sh <command>"
 fi
 
+docs () {
+  poetryRun sphinx-build --builder html --fail-on-warning docs/source/ docs/build/
+}
+
 lint () {
-  poetryRun black "$@" src/ tests/
+  poetryRun black "$@" docs/ src/ tests/
   poetryRun isort "$@" src/ tests/
 }
 
@@ -29,9 +33,10 @@ typecheck () {
 }
 
 case "$1" in
+  docs) docs;;
   lint) lint --check;;
   'lint:fix') lint;;
-  ship) lint; typecheck; testCover; TOX_SKIP_ENV='py39' poetryRun tox; echo 'Ship it!';;
+  ship) lint; typecheck; testCover; TOX_SKIP_ENV='py39' poetryRun tox; docs; echo 'Ship it!';;
   test) poetryRun pytest;;
   'test:cover') testCover;;
   'test:tox') poetryRun tox;;

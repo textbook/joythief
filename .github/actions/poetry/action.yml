@@ -1,6 +1,10 @@
 name: "Install poetry"
 
 inputs:
+  extra-groups:
+    description: "Additional dependency groups to install"
+    required: false
+    default: ""
   python-version:
     description: "Version of Python to install"
     required: false
@@ -34,7 +38,8 @@ runs:
     - run: "poetry check --strict"
       if: "${{ inputs.save-cache == 'true' }}"
       shell: "bash"
-    - run: "poetry sync"
+    - run: |
+        poetry sync ${{ inputs.extra-groups && '' || format('--with {0}', inputs.extra-groups) }}
       shell: "bash"
       env:
         POETRY_VIRTUALENVS_CREATE: "true"
