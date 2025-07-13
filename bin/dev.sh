@@ -13,9 +13,17 @@ docs () {
   poetryRun sphinx-build --builder html --fail-on-warning docs/source/ docs/build/
 }
 
-lint () {
+_lint () {
   poetryRun black "$@" docs/ src/ tests/
   poetryRun isort "$@" src/ tests/
+}
+
+lint () {
+  _lint --check
+}
+
+lintFix () {
+  _lint
 }
 
 poetryRun () {
@@ -34,8 +42,8 @@ typecheck () {
 
 case "$1" in
   docs) docs;;
-  lint) lint --check;;
-  'lint:fix') lint;;
+  lint) lint;;
+  'lint:fix') lintFix;;
   ship) lint; typecheck; testCover; TOX_SKIP_ENV='py39' poetryRun tox; docs; echo 'Ship it!';;
   test) poetryRun pytest;;
   'test:cover') testCover;;
