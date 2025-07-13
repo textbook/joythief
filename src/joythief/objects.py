@@ -1,3 +1,5 @@
+"""Matchers for general object types."""
+
 import typing as tp
 
 T = tp.TypeVar("T")
@@ -6,6 +8,18 @@ Type = tp.Union[type[T], tuple[type[T], ...]]
 
 
 class InstanceOf(tp.Generic[T]):
+    """Matches any instance of the specified type(s).
+
+    This matcher compares the received value using
+    :py:func:`isinstance`, so accepts either a single type or a tuple
+    of types. With :code:`nullable` set to :py:const:`True`, the
+    received value can also be :py:const:`None`.
+
+    Originally formulated for `this answer`_.
+
+    .. _this answer: https://stackoverflow.com/a/64973325/3001761
+
+    """
 
     _nullable: bool
     _type: Type[T]

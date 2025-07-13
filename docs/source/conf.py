@@ -23,7 +23,7 @@ extensions = [
 ]
 
 templates_path = ["_templates"]
-exclude_patterns = []
+exclude_patterns = ["joythief/modules.rst"]
 
 # -- Options for inter-project links -----------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/extensions/intersphinx.html#configuration
@@ -32,12 +32,18 @@ intersphinx_mapping = dict(
     python=("https://docs.python.org/", None),
 )
 
+# -- Options for autodocumentation -------------------------------------------
+# https://www.sphinx-doc.org/en/master/usage/extensions/autodoc.html#configuration
+
+autodoc_typehints = "description"
+
 # -- Options for API documentation -------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/extensions/apidoc.html#configuration
 
 apidoc_modules = [
     dict(path="../../src/joythief/", destination="joythief"),
 ]
+apidoc_separate_modules = True
 
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output

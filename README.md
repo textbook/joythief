@@ -2,14 +2,14 @@
 
 Comparison is the thief of joy.
 
-## Matchers
+## Usage
 
-### Numbers
+JoyThief provides a collection of matchers which can be used for testing.
 
-- `NaN` - equal to [IEEE 754] NaN (_"not a number"_) floating point values
+```python
+from joythief.numbers import NaN
 
-### Objects
 
-- `InstanceOf` - an instance of any of the specified types (or `type(None)`, if `nullable=True`)
-
-[ieee 754]: https://en.wikipedia.org/wiki/IEEE_754
+def test_my_func_with_no_arguments_returns_nan():
+    assert my_func() == NaN()
+```
