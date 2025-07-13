@@ -1,0 +1,20 @@
+[project]
+name = "joythief"
+version = "0.1.0"
+description = "Comparison is the thief of joy"
+authors = [
+    {name = "Jonathan Sharpe", email = "mail@jonrshar.pe"}
+]
+license = "ISC"
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = [
+]
+
+[tool.poetry]
+packages = [{include = "joythief", from = "src"}]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
