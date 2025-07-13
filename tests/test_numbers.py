@@ -3,7 +3,7 @@ import typing as tp
 
 import pytest
 
-from joythief.float import NaN
+from joythief.numbers import NaN
 
 
 @pytest.fixture(
