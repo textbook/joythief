@@ -11,10 +11,30 @@ requires-python = ">=3.9"
 dependencies = [
 ]
 
-[tool.poetry]
-packages = [{include = "joythief", from = "src"}]
-
-
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.isort]
+profile = "black"
+
+[tool.mypy]
+strict = true
+
+[[tool.mypy.overrides]]
+module = "tests.*"
+disable_error_code = [
+    "no-untyped-def"
+]
+
+[tool.poetry]
+packages = [{include = "joythief", from = "src"}]
+
+[tool.poetry.group.dev.dependencies]
+black = "^25.1.0"
+isort = "^6.0.1"
+mypy = "^1.16.1"
+pytest = "^8.4.1"
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
