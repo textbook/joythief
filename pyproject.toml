@@ -39,6 +39,18 @@ coverage = "^7.9.2"
 isort = "^6.0.1"
 mypy = "^1.16.1"
 pytest = "^8.4.1"
+tox = "^4.27.0"
 
 [tool.pytest.ini_options]
 pythonpath = ["src"]
+
+[tool.tox]
+legacy_tox_ini = """
+[tox]
+envlist = py39,py310,py311,py312,py313
+isolated_build = True
+
+[testenv]
+deps = pytest >=8.4.1, <9
+commands = pytest
+"""
