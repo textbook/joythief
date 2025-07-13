@@ -1,0 +1,85 @@
+import typing as tp
+from datetime import date, datetime
+
+import pytest
+
+from joythief.objects import InstanceOf
+
+
+class NewType:
+    pass
+
+
+@pytest.mark.parametrize(
+    "value",
+    [
+        pytest.param("foo", id="string"),
+        pytest.param(123, id="integer"),
+        pytest.param([], id="list"),
+        pytest.param({}, id="dictionary"),
+    ],
+)
+def test_instanceof_single_type_value_matches_type(value: tp.Any):
+    assert value == InstanceOf(type(value))
+    assert value != InstanceOf(NewType)
+
+
+def test_instanceof_single_type_repr():
+    assert (
+        repr(InstanceOf(NewType)) == "InstanceOf(<class 'tests.test_objects.NewType'>)"
+    )
+
+
+def test_instanceof_single_type_handles_inheritance():
+    assert datetime.now() == InstanceOf(date)
+    assert date.today() != InstanceOf(datetime)
+
+
+@pytest.mark.parametrize(
+    "value",
+    [
+        pytest.param(3j, id="complex"),
+        pytest.param(2.34, id="float"),
+        pytest.param(123, id="int"),
+    ],
+)
+def test_instanceof_multiple_types_matches_any(value: tp.Any):
+    assert value == InstanceOf((complex, float, int))
+
+
+@pytest.mark.parametrize(
+    "value",
+    [
+        pytest.param("foo", id="string"),
+        pytest.param([], id="list"),
+        pytest.param({}, id="dictionary"),
+    ],
+)
+def test_instanceof_multiple_types_does_not_match_other(value: tp.Any):
+    assert value != InstanceOf((complex, float, int))
+
+
+def test_instanceof_multiple_types_repr():
+    assert (
+        repr(InstanceOf((complex, float, int)))
+        == "InstanceOf((<class 'complex'>, <class 'float'>, <class 'int'>))"
+    )
+
+
+@pytest.mark.parametrize(
+    "type_, value",
+    [
+        pytest.param(str, "foo", id="single"),
+        pytest.param((list, tuple), [], id="multiple"),
+    ],
+)
+def test_instanceof_nullable_allows_none(type_: type[tp.Any], value: tp.Any):
+    assert value == InstanceOf(type_, nullable=True)
+    assert None == InstanceOf(type_, nullable=True)
+
+
+def test_instanceof_nullable_repr():
+    assert (
+        repr(InstanceOf(int, nullable=True))
+        == "InstanceOf(<class 'int'>, nullable=True)"
+    )
