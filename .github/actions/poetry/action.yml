@@ -39,7 +39,7 @@ runs:
       if: "${{ inputs.save-cache == 'true' }}"
       shell: "bash"
     - run: |
-        poetry sync ${{ inputs.extra-groups && '' || format('--with {0}', inputs.extra-groups) }}
+        poetry sync ${{ inputs.extra-groups != '' && format('--with {0}', inputs.extra-groups) || '' }}
       shell: "bash"
       env:
         POETRY_VIRTUALENVS_CREATE: "true"
