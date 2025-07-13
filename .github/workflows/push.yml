@@ -13,22 +13,9 @@ jobs:
     runs-on: "ubuntu-latest"
     steps:
       - uses: "actions/checkout@v4"
-      - uses: "actions/setup-python@v5"
+      - uses: "./.github/actions/poetry"
         with:
-          python-version: "3.13"
-      - run: |
-          python3 -m pip install --user pipx
-          python3 -m pipx ensurepath
-          pipx install poetry
-      - uses: "actions/cache@v4"
-        with:
-          key: "${{ runner.os }}-poetry-${{ hashFiles('poetry.lock') }}"
-          path: "./.venv"
-      - run: "poetry check --strict"
-      - run: "poetry sync"
-        env:
-          POETRY_VIRTUALENVS_CREATE: "true"
-          POETRY_VIRTUALENVS_IN_PROJECT: "true"
+          save-cache: "true"
       - run: "poetry run black --check src/ tests/"
       - run: "poetry run isort --check src/ tests/"
       - run: "poetry run mypy src/ tests/"
@@ -48,21 +35,9 @@ jobs:
           - "3.13"
     steps:
       - uses: "actions/checkout@v4"
-      - uses: "actions/setup-python@v5"
+      - uses: "./.github/actions/poetry"
         with:
           python-version: "${{ matrix.python-version }}"
-      - run: |
-          python3 -m pip install --user pipx
-          python3 -m pipx ensurepath
-          pipx install poetry
-      - uses: "actions/cache/restore@v4"
-        with:
-          key: "${{ runner.os }}-poetry-${{ hashFiles('poetry.lock') }}"
-          path: "./.venv"
-      - run: "poetry sync"
-        env:
-          POETRY_VIRTUALENVS_CREATE: "true"
-          POETRY_VIRTUALENVS_IN_PROJECT: "true"
       - run: "poetry run coverage run -m pytest"
       - run: "poetry run coverage report"
 
@@ -72,21 +47,7 @@ jobs:
       - "test"
     steps:
       - uses: "actions/checkout@v4"
-      - uses: "actions/setup-python@v5"
-        with:
-          python-version: "3.13"
-      - run: |
-          python3 -m pip install --user pipx
-          python3 -m pipx ensurepath
-          pipx install poetry
-      - uses: "actions/cache@v4"
-        with:
-          key: "${{ runner.os }}-poetry-${{ hashFiles('poetry.lock') }}"
-          path: "./.venv"
-      - run: "poetry sync"
-        env:
-          POETRY_VIRTUALENVS_CREATE: "true"
-          POETRY_VIRTUALENVS_IN_PROJECT: "true"
+      - uses: "./.github/actions/poetry"
       - run: "poetry build"
       - uses: "actions/upload-artifact@v4"
         with:

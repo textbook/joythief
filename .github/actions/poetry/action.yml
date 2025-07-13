@@ -1,0 +1,41 @@
+name: "Install poetry"
+
+inputs:
+  python-version:
+    description: "Version of Python to install"
+    required: false
+    default: "3.13"
+  save-cache:
+    description: "Whether to save (rather than just restore) the Poetry cache"
+    required: false
+    default: "false"
+
+runs:
+  using: "composite"
+  steps:
+    - uses: "actions/setup-python@v5"
+      with:
+        python-version: "${{ inputs.python-version }}"
+    - run: |
+        python3 -m pip install --user pipx
+        python3 -m pipx ensurepath
+        pipx install poetry
+      shell: "bash"
+    - uses: "actions/cache/restore@v4"
+      if: "${{ inputs.save-cache == 'false' }}"
+      with:
+        key: "${{ runner.os }}-poetry-${{ hashFiles('poetry.lock') }}"
+        path: "./.venv"
+    - uses: "actions/cache@v4"
+      if: "${{ inputs.save-cache == 'true' }}"
+      with:
+        key: "${{ runner.os }}-poetry-${{ hashFiles('poetry.lock') }}"
+        path: "./.venv"
+    - run: "poetry check --strict"
+      if: "${{ inputs.save-cache == 'true' }}"
+      shell: "bash"
+    - run: "poetry sync"
+      shell: "bash"
+      env:
+        POETRY_VIRTUALENVS_CREATE: "true"
+        POETRY_VIRTUALENVS_IN_PROJECT: "true"
