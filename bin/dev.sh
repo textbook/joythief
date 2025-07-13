@@ -24,12 +24,17 @@ testCover () {
   poetryRun coverage html
 }
 
+typecheck () {
+  poetryRun mypy src/ tests/
+}
+
 case "$1" in
   lint) lint;;
   'lint:fix') lint --check;;
-  ship) lint; testCover; TOX_SKIP_ENV='py39' poetryRun tox; echo 'Ship it!';;
+  ship) lint; typecheck; testCover; TOX_SKIP_ENV='py39' poetryRun tox; echo 'Ship it!';;
   test) poetryRun pytest;;
   'test:cover') testCover;;
   'test:tox') poetryRun tox;;
+  typecheck) typecheck;;
   *) echo "unsupported command: $1"; exit 1;;
 esac
