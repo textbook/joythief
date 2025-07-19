@@ -47,6 +47,7 @@ optional = true
 [tool.poetry.group.docs.dependencies]
 myst-parser = {version = "^4.0.1", markers = "python_version>='3.11'"}
 sphinx = {version = "^8.2.3", markers = "python_version>='3.11'"}
+furo = {version = "^2024.8.6", markers = "python_version>='3.11'"}
 
 [tool.pytest.ini_options]
 pythonpath = ["src"]
