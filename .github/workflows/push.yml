@@ -82,6 +82,9 @@ jobs:
     environment:
       name: "github-pages"
       url: "${{ steps.deployment.outputs.page_url }}"
+    permissions:
+      id-token: "write"
+      pages: "write"
     steps:
       - uses: "actions/deploy-pages@v4"
         id: "deployment"
@@ -119,3 +122,5 @@ jobs:
           name: "dist"
           path: "dist/"
       - run: "gh release upload ${{ github.ref_name }} dist/*"
+        env:
+          GH_TOKEN: "${{ github.token }}"
