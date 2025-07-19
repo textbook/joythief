@@ -75,7 +75,4 @@ html_theme_options = {
             "class": "",
         },
     ],
-    "source_repository": "https://github.com/textbook/joythief/",
-    "source_branch": "main",
-    "source_directory": "docs/source/",
 }
