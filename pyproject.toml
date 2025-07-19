@@ -1,6 +1,7 @@
 [project]
 name = "joythief"
-version = "0.1.0"
+# Version is set on publication
+version = "0.0.0"
 description = "Comparison is the thief of joy"
 authors = [
     {name = "Jonathan Sharpe", email = "mail@jonrshar.pe"}
