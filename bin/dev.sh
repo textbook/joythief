@@ -35,6 +35,7 @@ testCover () {
   poetryRun coverage run --module 'pytest'
   poetryRun coverage report
   poetryRun coverage html
+  poetryRun coverage lcov
 }
 
 typecheck () {

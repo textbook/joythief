@@ -1,6 +1,5 @@
 __pycache__/
+coverage/
 dist/
 docs/build/
 docs/source/joythief/
-htmlcov/
-.coverage

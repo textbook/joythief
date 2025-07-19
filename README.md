@@ -1,5 +1,9 @@
 # JoyThief
 
+[![CI](https://github.com/textbook/joythief/actions/workflows/push.yml/badge.svg)](https://github.com/textbook/joythief/actions/workflows/push.yml)
+[![Docs](https://app.readthedocs.org/projects/joythief/badge/?version=latest)](https://joythief.readthedocs.io/en/latest/)
+[![Coverage Status](https://coveralls.io/repos/github/textbook/joythief/badge.svg?branch=main)](https://coveralls.io/github/textbook/joythief?branch=main)
+
 Comparison is the thief of joy.
 
 ## Usage
