@@ -2,12 +2,14 @@
 
 import typing as tp
 
+from joythief.core import Matcher
+
 T = tp.TypeVar("T")
 
 Type = tp.Union[type[T], tuple[type[T], ...]]
 
 
-class InstanceOf(tp.Generic[T]):
+class InstanceOf(Matcher[T]):
     """Matches any instance of the specified type(s).
 
     This matcher compares the received value using

@@ -25,9 +25,10 @@ def test_nan_equal_to_nan(nan: float):
     [
         123,
         1.23,
+        13j,
         "foo",
-        float(),
     ],
+    ids=lambda v: type(v).__name__,
 )
 def test_nan_not_equal_to_others(value: tp.Any):
     assert value != NaN()

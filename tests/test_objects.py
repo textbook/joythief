@@ -13,11 +13,12 @@ class NewType:
 @pytest.mark.parametrize(
     "value",
     [
-        pytest.param("foo", id="string"),
-        pytest.param(123, id="integer"),
-        pytest.param([], id="list"),
-        pytest.param({}, id="dictionary"),
+        pytest.param("foo"),
+        pytest.param(123),
+        pytest.param([]),
+        pytest.param({}),
     ],
+    ids=lambda v: type(v).__name__,
 )
 def test_instanceof_single_type_value_matches_type(value: tp.Any):
     assert value == InstanceOf(type(value))
@@ -38,10 +39,11 @@ def test_instanceof_single_type_handles_inheritance():
 @pytest.mark.parametrize(
     "value",
     [
-        pytest.param(3j, id="complex"),
-        pytest.param(2.34, id="float"),
-        pytest.param(123, id="int"),
+        pytest.param(3j),
+        pytest.param(2.34),
+        pytest.param(123),
     ],
+    ids=lambda v: type(v).__name__,
 )
 def test_instanceof_multiple_types_matches_any(value: tp.Any):
     assert value == InstanceOf((complex, float, int))
@@ -50,10 +52,11 @@ def test_instanceof_multiple_types_matches_any(value: tp.Any):
 @pytest.mark.parametrize(
     "value",
     [
-        pytest.param("foo", id="string"),
-        pytest.param([], id="list"),
-        pytest.param({}, id="dictionary"),
+        pytest.param("foo"),
+        pytest.param([]),
+        pytest.param({}),
     ],
+    ids=lambda v: type(v).__name__,
 )
 def test_instanceof_multiple_types_does_not_match_other(value: tp.Any):
     assert value != InstanceOf((complex, float, int))

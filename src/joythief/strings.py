@@ -1,8 +1,17 @@
+"""Matchers for the `text sequence type`_ (:py:class:`str`).
+
+.. _text sequence type: https://docs.python.org/3/library/stdtypes.html#text-sequence-type-str
+"""
+
 import re
 import typing as tp
+from collections.abc import Mapping, Sequence
+from urllib.parse import parse_qs, urlparse
+
+from joythief.core import Matcher, MaybeMatcher
 
 
-class StringMatching:
+class StringMatching(Matcher[str]):
     """Matches any :py:class:`str` instance matching a regular expression.
 
     :param pattern: Regex pattern to match, as a string or compiled pattern.
@@ -38,3 +47,67 @@ class StringMatching:
 
     def __repr__(self) -> str:
         return f"StringMatching({self._pattern!r})"
+
+
+class UrlString(Matcher[str]):
+    """Matches any :py:class:`str` instance representing a URL.
+
+    The string is parsed with :py:func:`~urllib.parse.urlparse` and
+    compared attribute-by-attribute.
+    Any attributes not provided are ignored.
+
+    :param scheme: the scheme (e.g. ``"https"``)
+    :param hostname: the hostname (e.g. ``"example.com"``)
+    :param path: the path (e.g. ``"/some/path"``)
+    :param query: the result of parsing the query string with
+      :py:func:`~urllib.parse.parse_qs`
+
+    :raises TypeError: if no arguments are provided.
+
+    """
+
+    _hostname: tp.Optional[MaybeMatcher[str]]
+    _path: tp.Optional[MaybeMatcher[str]]
+    _query: tp.Optional[Mapping[str, Sequence[str]]]
+    _scheme: tp.Optional[MaybeMatcher[str]]
+
+    def __init__(
+        self,
+        *,
+        scheme: tp.Optional[MaybeMatcher[str]] = None,
+        hostname: tp.Optional[MaybeMatcher[str]] = None,
+        path: tp.Optional[MaybeMatcher[str]] = None,
+        query: tp.Optional[Mapping[str, Sequence[str]]] = None,
+    ):
+        self._hostname = hostname
+        self._path = path
+        self._query = query
+        self._scheme = scheme
+        if all(
+            getattr(self, attr) is None
+            for attr in ["_hostname", "_path", "_query", "_scheme"]
+        ):
+            raise TypeError("A UrlString with no arguments matches any string")
+
+    def __eq__(self, other: tp.Any) -> bool:
+        if not isinstance(other, str):
+            return NotImplemented
+        parsed = urlparse(other)
+        for attribute in ["hostname", "path", "scheme"]:
+            if (expected := getattr(self, f"_{attribute}")) is not None and getattr(
+                parsed, attribute
+            ) != expected:
+                return False
+        if (expected := self._query) is not None and parse_qs(
+            parsed.query, keep_blank_values=True
+        ) != expected:
+            return False
+        return True
+
+    def __repr__(self) -> str:
+        parameters = [
+            f"{name}={value!r}"
+            for name in ["scheme", "hostname", "path", "query"]
+            if (value := getattr(self, f"_{name}")) is not None
+        ]
+        return f"UrlString({', '.join(parameters)})"
