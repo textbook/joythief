@@ -1,7 +1,10 @@
+from __future__ import annotations
+
 import typing as tp
 from abc import ABC, abstractmethod
 
-from typing_extensions import TypeAlias
+if tp.TYPE_CHECKING:
+    from typing_extensions import TypeAlias
 
 T = tp.TypeVar("T")
 
