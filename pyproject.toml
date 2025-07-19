@@ -12,6 +12,13 @@ requires-python = ">=3.9"
 dependencies = [
 ]
 
+[project.urls]
+repository = "https://github.com/textbook/joythief"
+documentation = "https://joythief.readthedocs.io/"
+Issues = "https://github.com/textbook/joythief/issues"
+Coverage = "https://coveralls.io/github/textbook/joythief"
+Sponsor = "https://ko-fi.com/textbook"
+
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
 build-backend = "poetry.core.masonry.api"
@@ -43,8 +50,6 @@ disable_error_code = [
 
 [tool.poetry]
 packages = [{include = "joythief", from = "src"}]
-repository = "https://github.com/textbook/joythief"
-documentation = "https://joythief.readthedocs.io/"
 
 [tool.poetry.group.dev.dependencies]
 black = "^25.1.0"
@@ -61,11 +66,6 @@ optional = true
 myst-parser = {version = "^4.0.1", markers = "python_version>='3.11'"}
 sphinx = {version = "^8.2.3", markers = "python_version>='3.11'"}
 furo = {version = "^2024.8.6", markers = "python_version>='3.11'"}
-
-[tool.poetry.urls]
-Issues = "https://github.com/textbook/joythief/issues"
-Coverage = "https://coveralls.io/github/textbook/joythief"
-Sponsor = "https://ko-fi.com/textbook"
 
 [tool.pytest.ini_options]
 pythonpath = ["src"]
