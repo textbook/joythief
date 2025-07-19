@@ -7,6 +7,7 @@ ROOT="$(cd "$HERE/.." && pwd)"
 
 if [ "$#" -lt 1 ]; then
   >&2 echo "usage: ./bin/dev.sh <command>"
+  exit 0
 fi
 
 docs () {
