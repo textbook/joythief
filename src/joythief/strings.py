@@ -3,12 +3,41 @@
 .. _text sequence type: https://docs.python.org/3/library/stdtypes.html#text-sequence-type-str
 """
 
+import json
 import re
 import typing as tp
 from collections.abc import Mapping, Sequence
 from urllib.parse import parse_qs, urlparse
 
 from joythief.core import Matcher, MaybeMatcher
+from joythief.objects import InstanceOf
+
+
+class JsonString(Matcher[str]):
+    """Matches any :py:class:`str` instance representing JSON.
+
+    :param expected: What the result of parsing the JSON should be.
+      If omitted, any valid JSON string is matched.
+
+    """
+
+    __ANYTHING = object()
+
+    _expected: tp.Any
+
+    def __init__(self, expected: tp.Any = __ANYTHING):
+        self._expected = InstanceOf(object) if expected == self.__ANYTHING else expected
+
+    def __eq__(self, other: tp.Any) -> bool:
+        if not isinstance(other, str):
+            return NotImplemented
+        try:
+            return tp.cast(bool, json.loads(other) == self._expected)
+        except json.decoder.JSONDecodeError:
+            return False
+
+    def __repr__(self) -> str:
+        return f"JsonString({self._expected!r})"
 
 
 class StringMatching(Matcher[str]):

@@ -1,10 +1,11 @@
+import json
 import re
 import typing as tp
 from collections.abc import Mapping
 
 import pytest
 
-from joythief.strings import StringMatching, UrlString
+from joythief.strings import JsonString, StringMatching, UrlString
 
 
 @pytest.mark.parametrize("foo", ["foo", "fooo", "foooo", "fooooooo"])
@@ -112,3 +113,39 @@ def test_urlstring_repr_shows_parameters_in_sensible_order(
     expected: str,
 ):
     assert repr(UrlString(**arguments)) == expected
+
+
+@pytest.mark.parametrize(
+    "expected",
+    [
+        123,
+        "foo",
+        None,
+        ["foo", "bar"],
+        {"foo": "bar"},
+    ],
+    ids=lambda v: type(v).__name__,
+)
+def test_jsonstring_matches_content(expected):
+    assert JsonString(expected) == json.dumps(expected)
+
+
+def test_jsonstring_matches_any_content():
+    assert JsonString() == "{}"
+
+
+@pytest.mark.parametrize(
+    "actual",
+    [
+        pytest.param(123, id="non-string"),
+        pytest.param("foo.bar", id="non-JSON"),
+    ],
+)
+def test_jsonstring_does_not_match_non_json(actual: tp.Any):
+    assert JsonString(None) != actual
+
+
+def test_jsonstring_repr_shows_expected():
+    assert (
+        repr(JsonString({"foo": ["bar", 123]})) == "JsonString({'foo': ['bar', 123]})"
+    )
