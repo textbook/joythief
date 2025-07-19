@@ -1,5 +1,7 @@
 import typing as tp
 
+import pytest
+
 from joythief.core import Matcher
 
 
@@ -12,6 +14,8 @@ class EqMatcher(Matcher[int]):
         self._expected = expected
 
     def compare(self, other: tp.Any) -> bool:
+        if not isinstance(other, int):
+            return tp.cast(bool, NotImplemented)
         return other == self._expected
 
     def represent(self) -> str:
@@ -48,3 +52,8 @@ def test_core_matcher_uses_default_repr_after_comparison_to_other_value():
     assert matcher != 456
     assert matcher != 789
     assert repr(matcher) == "EqMatcher(123)"
+
+
+def test_core_matcher_permits_not_implemented(recwarn: pytest.WarningsRecorder):
+    assert EqMatcher(123) != "str"
+    assert len(recwarn.list) == 0

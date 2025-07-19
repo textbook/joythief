@@ -42,7 +42,10 @@ directory = "coverage/html"
 output = "coverage/lcov.info"
 
 [tool.coverage.report]
-exclude_also = ["if tp\\.TYPE_CHECKING:"]
+exclude_also = [
+    "if tp\\.TYPE_CHECKING:",
+    "raise NotImplementedError"
+]
 
 [tool.coverage.run]
 data_file = "coverage/.coverage"

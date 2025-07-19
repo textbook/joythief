@@ -9,6 +9,7 @@ if tp.TYPE_CHECKING:
 
 T = tp.TypeVar("T")
 
+
 class _MatcherState(Enum):
     UNCOMPARED = auto()
     EQUAL_ONCE = auto()
@@ -60,6 +61,8 @@ class Matcher(tp.Generic[T], ABC):
 
     def __eq__(self, other: tp.Any) -> bool:
         result = self.compare(other)
+        if result is NotImplemented:
+            return result
         if self._state == _MatcherState.UNCOMPARED and result:
             self._state = _MatcherState.EQUAL_ONCE
             self._equal_to = other
@@ -79,7 +82,7 @@ class Matcher(tp.Generic[T], ABC):
 
         .. __: https://docs.python.org/3/reference/datamodel.html#object.__eq__
         """
-        ...
+        raise NotImplementedError
 
     @abstractmethod
     def represent(self) -> str:
