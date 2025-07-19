@@ -35,4 +35,4 @@ def test_nan_not_equal_to_others(value: tp.Any):
 
 
 def test_nan_repr_is_nan():
-    assert repr(NaN()) == "nan"
+    assert repr(NaN()) == "NaN()"

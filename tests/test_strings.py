@@ -149,3 +149,4 @@ def test_jsonstring_repr_shows_expected():
     assert (
         repr(JsonString({"foo": ["bar", 123]})) == "JsonString({'foo': ['bar', 123]})"
     )
+    assert repr(JsonString()) == "JsonString()"

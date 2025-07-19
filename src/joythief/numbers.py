@@ -26,10 +26,10 @@ class NaN(Matcher[Real]):
 
     """
 
-    def __eq__(self, other: tp.Any) -> bool:
+    def compare(self, other: tp.Any) -> bool:
         if not isinstance(other, Real):
             return NotImplemented
         return math.isnan(other)
 
-    def __repr__(self) -> str:
-        return "nan"
+    def represent(self) -> str:
+        return super().represent()

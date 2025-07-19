@@ -26,17 +26,21 @@ class JsonString(Matcher[str]):
     _expected: tp.Any
 
     def __init__(self, expected: tp.Any = __ANYTHING):
-        self._expected = InstanceOf(object) if expected == self.__ANYTHING else expected
+        super().__init__()
+        self._expected = expected
 
-    def __eq__(self, other: tp.Any) -> bool:
+    def compare(self, other: tp.Any) -> bool:
         if not isinstance(other, str):
             return NotImplemented
         try:
-            return tp.cast(bool, json.loads(other) == self._expected)
+            parsed = json.loads(other)
         except json.decoder.JSONDecodeError:
             return False
+        return self._expected is self.__ANYTHING or parsed == self._expected
 
-    def __repr__(self) -> str:
+    def represent(self) -> str:
+        if self._expected is self.__ANYTHING:
+            return super().represent()
         return f"JsonString({self._expected!r})"
 
 
@@ -67,14 +71,15 @@ class StringMatching(Matcher[str]):
         *,
         flags: int = 0,
     ):
+        super().__init__()
         self._pattern = re.compile(pattern, flags=flags)
 
-    def __eq__(self, other: tp.Any) -> bool:
+    def compare(self, other: tp.Any) -> bool:
         if not isinstance(other, str):
             return NotImplemented
         return self._pattern.match(other) is not None
 
-    def __repr__(self) -> str:
+    def represent(self) -> str:
         return f"StringMatching({self._pattern!r})"
 
 
@@ -108,6 +113,7 @@ class UrlString(Matcher[str]):
         path: tp.Optional[MaybeMatcher[str]] = None,
         query: tp.Optional[Mapping[str, Sequence[str]]] = None,
     ):
+        super().__init__()
         self._hostname = hostname
         self._path = path
         self._query = query
@@ -118,7 +124,7 @@ class UrlString(Matcher[str]):
         ):
             raise TypeError("A UrlString with no arguments matches any string")
 
-    def __eq__(self, other: tp.Any) -> bool:
+    def compare(self, other: tp.Any) -> bool:
         if not isinstance(other, str):
             return NotImplemented
         parsed = urlparse(other)
@@ -133,7 +139,7 @@ class UrlString(Matcher[str]):
             return False
         return True
 
-    def __repr__(self) -> str:
+    def represent(self) -> str:
         parameters = [
             f"{name}={value!r}"
             for name in ["scheme", "hostname", "path", "query"]

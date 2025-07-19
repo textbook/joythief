@@ -46,13 +46,16 @@ intersphinx_mapping = dict(
 # -- Options for autodocumentation -------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/extensions/autodoc.html#configuration
 
+autodoc_default_options = {
+    "exclude-members": "compare,represent",
+}
 autodoc_typehints = "description"
 
 # -- Options for API documentation -------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/extensions/apidoc.html#configuration
 
 apidoc_modules = [
-    dict(path="../../src/joythief/", destination="joythief"),
+    dict(path="../../src/joythief/", destination="joythief", module_first=True),
 ]
 apidoc_separate_modules = True
 

@@ -27,10 +27,11 @@ class InstanceOf(Matcher[T]):
     _type: Type[T]
 
     def __init__(self, type_: Type[T], *, nullable: bool = False):
+        super().__init__()
         self._nullable = nullable
         self._type = type_
 
-    def __eq__(self, other: tp.Any) -> bool:
+    def compare(self, other: tp.Any) -> bool:
         type_: tuple[type[tp.Any], ...] = (
             self._type if isinstance(self._type, tuple) else (self._type,)
         )
@@ -38,7 +39,7 @@ class InstanceOf(Matcher[T]):
             type_ = type_ + (type(None),)
         return isinstance(other, type_)
 
-    def __repr__(self) -> str:
+    def represent(self) -> str:
         return (
             f"InstanceOf({self._type!r}"
             f"{', nullable=True' if self._nullable else ''})"
