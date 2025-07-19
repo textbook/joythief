@@ -43,7 +43,6 @@ typecheck () {
 
 case "$1" in
   docs) docs;;
-  'docs:reqs') poetry --directory="$ROOT" export --format 'requirements.txt' --only 'docs' --output 'docs/requirements.txt';;
   lint) lint;;
   'lint:fix') lintFix;;
   ship) lint; typecheck; testCover; TOX_SKIP_ENV='py39' poetryRun tox; docs; echo 'Ship it!';;
