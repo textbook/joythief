@@ -2,11 +2,17 @@
 #
 # For the full list of built-in configuration values, see the documentation:
 # https://www.sphinx-doc.org/en/master/usage/configuration.html
+import os
 import pathlib
 import sys
+import tomllib
 
-source = pathlib.Path(__file__) / ".." / ".." / ".." / "src"
+root = pathlib.Path(__file__).parent / ".." / ".."
+source = root / "src"
 sys.path.append(str(source.resolve()))
+
+with open(root / "pyproject.toml", "rb") as f:
+    pyproject = tomllib.load(f)
 
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
@@ -14,7 +20,7 @@ sys.path.append(str(source.resolve()))
 project = "JoyThief"
 copyright = "2025, Jonathan Sharpe"
 author = "Jonathan Sharpe"
-release = "0.1.0"
+release = os.getenv("READTHEDOCS_VERSION_NAME", pyproject["project"]["version"])
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
