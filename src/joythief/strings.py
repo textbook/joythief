@@ -3,6 +3,8 @@
 .. _text sequence type: https://docs.python.org/3/library/stdtypes.html#text-sequence-type-str
 """
 
+from __future__ import annotations
+
 import json
 import re
 import typing as tp
@@ -10,7 +12,6 @@ from collections.abc import Mapping, Sequence
 from urllib.parse import parse_qs, urlparse
 
 from joythief.core import Matcher, MaybeMatcher
-from joythief.objects import InstanceOf
 
 
 class JsonString(Matcher[str]):
@@ -58,6 +59,24 @@ class StringMatching(Matcher[str]):
     """
 
     _pattern: re.Pattern[str]
+
+    @classmethod
+    def uuid(cls) -> StringMatching:
+        """Create a matcher for strings representing `UUIDs`_.
+
+        Matches the 8-4-4-4-12 hexadecimal format as created by e.g.
+        stringifying :py:class:`~uuid.UUID`:
+
+        .. code-block:: python
+
+            '36962eb6-d198-4661-9d97-437796e5146b'
+
+        .. _UUIDs: https://en.wikipedia.org/wiki/Universally_unique_identifier
+        """
+        return cls(
+            r"[\da-f]{8}-[\da-f]{4}-[\da-f]{4}-[\da-f]{4}-[\da-f]{12}",
+            flags=re.IGNORECASE,
+        )
 
     @tp.overload
     def __init__(self, pattern: re.Pattern[str]): ...

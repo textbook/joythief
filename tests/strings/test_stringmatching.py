@@ -1,4 +1,6 @@
 import re
+from datetime import datetime
+from uuid import uuid4
 
 import pytest
 
@@ -39,3 +41,27 @@ def test_stringmatching_repr():
     )
 
 
+@pytest.mark.parametrize(
+    "uuid",
+    [
+        pytest.param(str(uuid4()).lower(), id="lowercase"),
+        pytest.param(str(uuid4()).upper(), id="uppercase"),
+    ],
+)
+def test_stringmatching_uuid_preset_matches_uuid(uuid):
+    matcher = StringMatching.uuid()
+    assert matcher == uuid
+    assert repr(matcher) == repr(uuid)
+
+
+@pytest.mark.parametrize(
+    "value",
+    [
+        "foo.bar",
+        123,
+        datetime.now(),
+    ],
+    ids=lambda v: type(v).__name__,
+)
+def test_stringmatching_uuid_preset_does_not_match_non_uuid(value):
+    assert StringMatching.uuid() != value
