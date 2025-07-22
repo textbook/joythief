@@ -1,5 +1,5 @@
 import re
-from datetime import datetime
+from datetime import datetime, timezone
 from uuid import uuid4
 
 import pytest
@@ -42,22 +42,23 @@ def test_stringmatching_repr():
 
 
 @pytest.mark.parametrize(
-    "uuid",
+    "value",
     [
         pytest.param(str(uuid4()).lower(), id="lowercase"),
         pytest.param(str(uuid4()).upper(), id="uppercase"),
     ],
 )
-def test_stringmatching_uuid_preset_matches_uuid(uuid):
+def test_stringmatching_uuid_preset_matches_uuid(value):
     matcher = StringMatching.uuid()
-    assert matcher == uuid
-    assert repr(matcher) == repr(uuid)
+    assert matcher == value
+    assert repr(matcher) == repr(value)
 
 
 @pytest.mark.parametrize(
     "value",
     [
         "foo.bar",
+        pytest.param(f"foo {uuid4()} bar", id="string containing UUID"),
         123,
         datetime.now(),
     ],
@@ -65,3 +66,38 @@ def test_stringmatching_uuid_preset_matches_uuid(uuid):
 )
 def test_stringmatching_uuid_preset_does_not_match_non_uuid(value):
     assert StringMatching.uuid() != value
+
+
+@pytest.mark.parametrize(
+    "value",
+    [
+        pytest.param(datetime.now().isoformat(), id="isoformat"),
+        pytest.param(datetime.now(tz=timezone.utc).isoformat(), id="isoformat UTC"),
+        pytest.param(str(datetime.now()), id="str"),
+        pytest.param(str(datetime.now(tz=timezone.utc)), id="str UTC"),
+        pytest.param(
+            datetime.now(tz=timezone.utc).isoformat().replace("+00:00", "Z"),
+            id="isoformat Zulu",
+        ),
+    ],
+)
+def test_stringmatching_iso8601_preset_matches_timestamp(value):
+    matcher = StringMatching.iso8601()
+    assert matcher == value
+    assert repr(matcher) == repr(value)
+
+
+@pytest.mark.parametrize(
+    "value",
+    [
+        pytest.param(
+            f"foo {datetime.now().isoformat()} bar",
+            id="string containing isoformat",
+        ),
+        "foo.bar",
+        [],
+    ],
+    ids=lambda v: type(v).__name__,
+)
+def test_stringmatching_iso8601_preset_does_not_match_non_timestamp(value):
+    assert StringMatching.iso8601() != value

@@ -3,8 +3,6 @@
 .. _text sequence type: https://docs.python.org/3/library/stdtypes.html#text-sequence-type-str
 """
 
-from __future__ import annotations
-
 import json
 import re
 import typing as tp
@@ -61,7 +59,31 @@ class StringMatching(Matcher[str]):
     _pattern: re.Pattern[str]
 
     @classmethod
-    def uuid(cls) -> StringMatching:
+    def iso8601(cls) -> Matcher[str]:
+        """Create a matcher for strings representing `ISO 8601`_ timestamps.
+
+        Matches the ``%Y-%m-%dT%H:%M:%S.%f`` format as created by e.g.
+        :py:meth:`datetime.datetime.isoformat`:
+
+        .. code-block:: python
+
+            '2025-07-22T14:16:48.708298'
+
+        **Note** the match is only on structure, it does not attempt to validate
+        the actual datetime represented by the string.
+
+        .. _ISO 8601: https://en.wikipedia.org/wiki/ISO_8601
+        """
+        date = r"\d{4}-\d{2}-\d{2}"
+        time = r"\d{2}:\d{2}:\d{2}(?:.\d{3,6})?"
+        offset = r"[+\-]\d{2}:?\d{2}|Z"
+        return StringMatching(
+            rf"^{date}[T ]{time}(?:{offset})?$",
+            flags=re.IGNORECASE,
+        )
+
+    @classmethod
+    def uuid(cls) -> Matcher[str]:
         """Create a matcher for strings representing `UUIDs`_.
 
         Matches the 8-4-4-4-12 hexadecimal format as created by e.g.
@@ -74,7 +96,7 @@ class StringMatching(Matcher[str]):
         .. _UUIDs: https://en.wikipedia.org/wiki/Universally_unique_identifier
         """
         return cls(
-            r"[\da-f]{8}-[\da-f]{4}-[\da-f]{4}-[\da-f]{4}-[\da-f]{12}",
+            r"^[\da-f]{8}-[\da-f]{4}-[\da-f]{4}-[\da-f]{4}-[\da-f]{12}$",
             flags=re.IGNORECASE,
         )
 
