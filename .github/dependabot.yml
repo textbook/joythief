@@ -4,7 +4,14 @@ version: 2
 updates:
   - package-ecosystem: "pip"
     directory: "/"
-    open-pull-requests-limit: 0 # security updates only
+    open-pull-requests-limit: 10
     schedule:
-      interval: "monthly"
+      interval: "weekly"
     versioning-strategy: "increase"
+    groups:
+      minor-and-patch:
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
