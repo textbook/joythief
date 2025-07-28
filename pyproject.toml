@@ -68,11 +68,11 @@ packages = [{include = "joythief", from = "src"}]
 
 [tool.poetry.group.dev.dependencies]
 black = "^25.1.0"
-coverage = "^7.9.2"
+coverage = "^7.10.1"
 isort = "^6.0.1"
 mypy = "^1.17.0"
 pytest = "^8.4.1"
-tox = "^4.28.0"
+tox = "^4.28.3"
 
 [tool.poetry.group.docs]
 optional = true
