@@ -62,6 +62,8 @@ class StringMatching(Matcher[str]):
     def iso8601(cls) -> Matcher[str]:
         """Create a matcher for strings representing `ISO 8601`_ timestamps.
 
+        .. versionadded:: 0.4.0
+
         Matches the ``%Y-%m-%dT%H:%M:%S.%f`` format as created by e.g.
         :py:meth:`datetime.datetime.isoformat`:
 
@@ -85,6 +87,8 @@ class StringMatching(Matcher[str]):
     @classmethod
     def uuid(cls) -> Matcher[str]:
         """Create a matcher for strings representing `UUIDs`_.
+
+        .. versionadded:: 0.4.0
 
         Matches the 8-4-4-4-12 hexadecimal format as created by e.g.
         stringifying :py:class:`~uuid.UUID`:
