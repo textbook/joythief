@@ -162,3 +162,26 @@ or in tools like the `PyCharm`_ test runner.
 .. _PyCharm: https://www.jetbrains.com/pycharm/
 .. _pytest: https://docs.pytest.org/en/stable/
 """
+
+from .core import Matcher
+
+__all__ = ["Matcher"]
+
+Matcher = Matcher
+"""The core generic matcher type.
+
+.. versionadded:: 0.5.0 previously only exposed from :py:mod:`joythief.core`
+
+Can be extended, to create your own custom matchers, or used in type
+definitions.
+
+.. code-block:: python
+
+    from joythief import Matcher
+    from joythief.strings import StringContaining
+
+
+    def contains_only(valid_chars: str) -> Matcher[str]:
+        return StringContaining(rf"^[{valid_chars}]+$")
+
+"""
