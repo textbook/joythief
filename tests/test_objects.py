@@ -104,3 +104,7 @@ def test_any_matches_anything(value):
     matcher: Matcher[tp.Any] = Anything()
     assert matcher == value
     assert repr(matcher) == repr(value)
+
+
+def test_any_default_repr():
+    assert repr(Anything()) == "Anything()"
