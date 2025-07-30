@@ -3,7 +3,8 @@ from datetime import date, datetime
 
 import pytest
 
-from joythief.objects import InstanceOf
+from joythief import Matcher
+from joythief.objects import Anything, InstanceOf
 
 
 class NewType:
@@ -86,3 +87,20 @@ def test_instanceof_nullable_repr():
         repr(InstanceOf(int, nullable=True))
         == "InstanceOf(<class 'int'>, nullable=True)"
     )
+
+
+@pytest.mark.parametrize(
+    "value",
+    [
+        123,
+        [],
+        4.56,
+        {},
+        date.today(),
+    ],
+    ids=lambda v: type(v).__name__,
+)
+def test_any_matches_anything(value):
+    matcher: Matcher[tp.Any] = Anything()
+    assert matcher == value
+    assert repr(matcher) == repr(value)

@@ -9,6 +9,22 @@ T = tp.TypeVar("T")
 Type = tp.Union[type[T], tuple[type[T], ...]]
 
 
+class Anything(Matcher[T]):
+    """Matches anything at all.
+
+    .. versionadded:: 0.5.0
+
+    The JoyThief version of :py:data:`unittest.mock.ANY`.
+
+    """
+
+    def compare(self, _: tp.Any) -> bool:
+        return True
+
+    def represent(self) -> str:
+        return super().represent()
+
+
 class InstanceOf(Matcher[T]):
     """Matches any instance of the specified type(s).
 
