@@ -15,7 +15,7 @@ class EqMatcher(Matcher[int]):
 
     def compare(self, other: tp.Any) -> bool:
         if not isinstance(other, int):
-            return tp.cast(bool, NotImplemented)
+            return self.not_implemented
         return other == self._expected
 
     def represent(self) -> str:

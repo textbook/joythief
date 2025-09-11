@@ -92,6 +92,17 @@ class Matcher(tp.Generic[T], ABC):
         """
         return f"{type(self).__name__}()"
 
+    @property
+    def not_implemented(self) -> bool:
+        """The value :py:const:`NotImplemented`, force-cast to :py:class:`bool`.
+
+        ``NotImplemented`` is special-cased in e.g. `__eq__`__, but cannot be
+        returned from :py:meth:`compare` without a cast.
+
+        .. __: https://docs.python.org/3/reference/datamodel.html#object.__eq__
+        """
+        return tp.cast(bool, NotImplemented)
+
 
 MaybeMatcher: TypeAlias = tp.Union[T, Matcher[T]]
 """Either ``T`` or a matcher of ``T``."""

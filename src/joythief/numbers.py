@@ -28,7 +28,7 @@ class NaN(Matcher[Real]):
 
     def compare(self, other: tp.Any) -> bool:
         if not isinstance(other, Real):
-            return tp.cast(bool, NotImplemented)
+            return self.not_implemented
         return math.isnan(other)
 
     def represent(self) -> str:

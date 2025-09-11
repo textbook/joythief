@@ -30,7 +30,7 @@ class JsonString(Matcher[str]):
 
     def compare(self, other: tp.Any) -> bool:
         if not isinstance(other, str):
-            return tp.cast(bool, NotImplemented)
+            return self.not_implemented
         try:
             parsed = json.loads(other)
         except json.decoder.JSONDecodeError:
@@ -121,7 +121,7 @@ class StringMatching(Matcher[str]):
 
     def compare(self, other: tp.Any) -> bool:
         if not isinstance(other, str):
-            return tp.cast(bool, NotImplemented)
+            return self.not_implemented
         return self._pattern.match(other) is not None
 
     def represent(self) -> str:
@@ -171,7 +171,7 @@ class UrlString(Matcher[str]):
 
     def compare(self, other: tp.Any) -> bool:
         if not isinstance(other, str):
-            return tp.cast(bool, NotImplemented)
+            return self.not_implemented
         parsed = urlparse(other)
         for attribute in ["hostname", "path", "scheme"]:
             if (expected := getattr(self, f"_{attribute}")) is not None and getattr(
