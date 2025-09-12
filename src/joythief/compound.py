@@ -40,7 +40,7 @@ class _Compound(Matcher[T], tp.Generic[T], ABC):
         return f"{type(self).__name__}({', '.join(repr(m) for m in self._matchers)})"
 
 
-class All(_Compound[T]):
+class AllOf(_Compound[T]):
     """Matches values which match all of the child matchers.
 
     .. note:: Unlike :py:func:`all` this comparison is not lazy; all matchers
@@ -55,7 +55,7 @@ class All(_Compound[T]):
         return equal
 
 
-class Any(_Compound[T]):
+class AnyOf(_Compound[T]):
     """Matches values which match any of the child matchers.
 
     .. note:: Unlike :py:func:`any` this comparison is not lazy; all matchers

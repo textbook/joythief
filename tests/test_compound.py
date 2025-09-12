@@ -1,54 +1,54 @@
 import pytest
 
-from joythief.compound import All, Any
+from joythief.compound import AllOf, AnyOf
 from joythief.strings import JsonString, StringMatching
 
 
 def test_all_false_if_none_match():
-    assert "foo" != All(StringMatching(r"^{}$"), JsonString())
+    assert "foo" != AllOf(StringMatching(r"^{}$"), JsonString())
 
 
 def test_all_false_if_any_do_not_match():
-    assert "foo" != All(StringMatching(r"fo+"), JsonString())
+    assert "foo" != AllOf(StringMatching(r"fo+"), JsonString())
 
 
 def test_all_true_if_all_match():
-    assert "{}" == All(StringMatching(r"^{}$"), JsonString())
+    assert "{}" == AllOf(StringMatching(r"^{}$"), JsonString())
 
 
 def test_all_repr_shows_matches():
-    matcher = All(JsonString(), StringMatching(r"fo+"))
+    matcher = AllOf(JsonString(), StringMatching(r"fo+"))
     assert "foo" != matcher
-    assert repr(matcher) == "All(JsonString(), 'foo')"
+    assert repr(matcher) == "AllOf(JsonString(), 'foo')"
 
 
 def test_all_requires_some_matchers():
     with pytest.raises(TypeError):
-        _ = All()
+        _ = AllOf()
 
 
 def test_all_warns_on_single_matcher():
     with pytest.warns(UserWarning):
-        _ = All(JsonString())
+        _ = AllOf(JsonString())
 
 
 def test_any_false_if_none_match():
-    assert "foo" != Any(StringMatching(r"^{}$"), JsonString())
+    assert "foo" != AnyOf(StringMatching(r"^{}$"), JsonString())
 
 
 def test_any_true_if_any_match():
-    assert "foo" == Any(StringMatching(r"fo+"), JsonString())
+    assert "foo" == AnyOf(StringMatching(r"fo+"), JsonString())
 
 
 def test_any_true_if_all_match():
-    assert "{}" == Any(StringMatching(r"^{}$"), JsonString())
+    assert "{}" == AnyOf(StringMatching(r"^{}$"), JsonString())
 
 
 def test_any_requires_some_matchers():
     with pytest.raises(TypeError):
-        _ = Any()
+        _ = AnyOf()
 
 
 def test_any_warns_on_single_matcher():
     with pytest.warns(UserWarning):
-        _ = Any(JsonString())
+        _ = AnyOf(JsonString())
