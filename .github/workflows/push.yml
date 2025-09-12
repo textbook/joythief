@@ -32,6 +32,7 @@ jobs:
           coveralls report coverage/lcov.info
         env:
           COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_TOKEN }}
+        continue-on-error: true
 
   test:
     runs-on: "ubuntu-latest"
