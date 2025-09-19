@@ -11,6 +11,7 @@ readme = "README.md"
 requires-python = ">=3.9"
 dependencies = [
 ]
+dynamic = ["classifiers"]
 
 [project.urls]
 repository = "https://github.com/textbook/joythief"
