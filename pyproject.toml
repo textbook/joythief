@@ -23,6 +23,22 @@ Sponsor = "https://ko-fi.com/textbook"
 requires = ["poetry-core>=2.0.0,<3.0.0"]
 build-backend = "poetry.core.masonry.api"
 
+[dependency-groups]
+dev = [
+    { include-group = "test" },
+    { include-group = "lint" },
+    "coverage (>=7.10.6,<8)",
+    "tox (>=4.30.2,<5)",
+]
+lint = [
+    "black (>=25.1.0,<26)",
+    "isort (>=6.0.1,<7)",
+    "mypy (>=1.18.1,<2)",
+]
+test = [
+    "pytest (>=8.4.2,<9)",
+]
+
 [tool.coverage.html]
 directory = "coverage/html"
 
@@ -64,14 +80,6 @@ classifiers = [
 ]
 packages = [{include = "joythief", from = "src"}]
 
-[tool.poetry.group.dev.dependencies]
-black = "^25.1.0"
-coverage = "^7.10.6"
-isort = "^6.0.1"
-mypy = "^1.18.1"
-pytest = "^8.4.2"
-tox = "^4.30.2"
-
 [tool.poetry.group.docs]
 optional = true
 
@@ -84,12 +92,9 @@ furo = {version = "^2025.7.19", markers = "python_version>='3.11'"}
 pythonpath = ["src"]
 
 [tool.tox]
-legacy_tox_ini = """
-[tox]
-envlist = py3{9,10,11,12,13}
-isolated_build = True
+envlist = ["py39", "py310", "py311", "py312", "py313"]
+isolated_build = true
 
-[testenv]
-deps = pytest >=8.4.1, <9
-commands = pytest
-"""
+[tool.tox.env_run_base]
+commands = [["pytest"]]
+dependency_groups = ["test"]
