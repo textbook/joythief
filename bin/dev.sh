@@ -14,6 +14,14 @@ docs () {
   poetryRun sphinx-build --builder html --fail-on-warning docs/source/ docs/build/
 }
 
+exportDeps () {
+  usePoetry export \
+    --format='requirements.txt' \
+    --only='test' \
+    --without-hashes \
+    > "$ROOT/requirements.txt"
+}
+
 _lint () {
   poetryRun black "$@" docs/ src/ tests/
   poetryRun isort "$@" src/ tests/
@@ -28,7 +36,7 @@ lintFix () {
 }
 
 poetryRun () {
-  poetry --directory="$ROOT" run "$@"
+  usePoetry run "$@"
 }
 
 testCover () {
@@ -42,6 +50,10 @@ typecheck () {
   poetryRun mypy src/ tests/
 }
 
+usePoetry () {
+  poetry --directory="$ROOT" "$@"
+}
+
 case "$1" in
   docs) docs;;
   lint) lint;;
@@ -49,7 +61,7 @@ case "$1" in
   ship) lint; typecheck; testCover; TOX_SKIP_ENV='py39' poetryRun tox; docs; echo 'Ship it!';;
   test) poetryRun pytest;;
   'test:cover') testCover;;
-  'test:tox') poetryRun tox;;
+  'test:tox') exportDeps; poetryRun tox;;
   typecheck) typecheck;;
   *) echo "unsupported command: $1"; exit 1;;
 esac

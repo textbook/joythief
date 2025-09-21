@@ -3,3 +3,4 @@ coverage/
 dist/
 docs/build/
 docs/source/joythief/
+requirements.txt
