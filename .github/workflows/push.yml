@@ -17,7 +17,7 @@ jobs:
       name: "coveralls"
       url: "https://coveralls.io/github/${{ github.repository }}"
     steps:
-      - uses: "actions/checkout@v4"
+      - uses: "actions/checkout@v5"
       - uses: "./.github/actions/poetry"
         with:
           save-cache: "true"
@@ -48,7 +48,7 @@ jobs:
           - "3.12"
           - "3.14"
     steps:
-      - uses: "actions/checkout@v4"
+      - uses: "actions/checkout@v5"
       - uses: "./.github/actions/poetry"
         with:
           python-version: "${{ matrix.python-version }}"
@@ -59,7 +59,7 @@ jobs:
     needs:
       - "test"
     steps:
-      - uses: "actions/checkout@v4"
+      - uses: "actions/checkout@v5"
       - uses: "./.github/actions/poetry"
         with:
           extra-groups: "docs"
@@ -105,7 +105,7 @@ jobs:
     permissions:
       id-token: "write"
     steps:
-      - uses: "actions/checkout@v4"
+      - uses: "actions/checkout@v5"
       - uses: "./.github/actions/poetry"
       - uses: "actions/download-artifact@v4"
         with:
@@ -121,7 +121,7 @@ jobs:
     permissions:
       contents: "write"
     steps:
-      - uses: "actions/checkout@v4"
+      - uses: "actions/checkout@v5"
       - uses: "actions/download-artifact@v4"
         with:
           name: "dist"
@@ -129,3 +129,20 @@ jobs:
       - run: "gh release upload ${{ github.ref_name }} dist/*"
         env:
           GH_TOKEN: "${{ github.token }}"
+
+
+  smoke-test:
+    runs-on: "ubuntu-latest"
+    if: "${{ startsWith(github.ref, 'refs/tags/v') }}"
+    needs:
+      - "deploy-pypi"
+    steps:
+      - uses: "actions/checkout@v5"
+      - uses: "actions/setup-python@v6"
+        with:
+          python-version: "3.13"
+      - run: |
+          pip install "joythief==${VERSION#v}"
+          python3 src/example.py
+        env:
+          VERSION: "${{ github.ref_name }}"
