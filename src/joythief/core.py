@@ -55,7 +55,8 @@ class Matcher(tp.Generic[T], ABC):
     _equal_to: tp.Any
     _state: _MatcherState
 
-    def __init__(self) -> None:
+    def __init__(self, *args: tp.Any, **kwargs: tp.Any) -> None:
+        super().__init__(*args, **kwargs)
         self._equal_to = self.__PLACEHOLDER
         self._state = _MatcherState.UNCOMPARED
 
