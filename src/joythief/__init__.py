@@ -159,6 +159,11 @@ output:
 
 or in tools like the `PyCharm`_ test runner.
 
+To aid in this process, compound matchers (in e.g. :py:mod:`joythief.compound`
+and :py:mod:`joythief.data_structures`) are not implemented lazily - comparison
+continues even once a mismatch is found, so that any inner matchers that _are_
+equal can have their representations resolved.
+
 .. _PyCharm: https://www.jetbrains.com/pycharm/
 .. _pytest: https://docs.pytest.org/en/stable/
 """
