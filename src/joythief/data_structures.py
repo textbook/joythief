@@ -19,7 +19,7 @@ class DictContaining(Matcher[Mapping[Hashable, tp.Any]], dict[Hashable, tp.Any])
 
         assert (
             actual
-            == DictContaining([("foo", 123), ("bar", 456)], baz=InstanceOf(int)
+            == DictContaining([("foo", 123), ("bar", 456)], baz=InstanceOf(int))
         )
 
     **Note**: this subclasses :py:class:`dict` so that ``pytest`` will show the
