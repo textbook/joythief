@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 import typing as tp
 from collections.abc import Hashable, Mapping
 
@@ -9,8 +7,20 @@ from .core import Matcher
 class DictContaining(Matcher[Mapping[Hashable, tp.Any]], dict[Hashable, tp.Any]):
     """Match the specified keys in a mapping, ignoring any extra keys.
 
+
+    :param \\*args: sequence of key-value pairs to include in the comparison
+
+    :param \\**kwargs: mapping of key-value pairs to include in the comparison
+
     :raises ValueError: if no keys are specified (use
         :py:class:`~joythief.objects.InstanceOf` with :py:class:`dict` instead).
+
+    .. code-block:: python
+
+        assert (
+            actual
+            == DictContaining([("foo", 123), ("bar", 456)], baz=InstanceOf(int)
+        )
 
     **Note**: this subclasses :py:class:`dict` so that ``pytest`` will show the
     common and differing items, e.g.:
