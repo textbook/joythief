@@ -35,9 +35,6 @@ class DictContaining(Matcher[Mapping[Hashable, tp.Any]], dict[Hashable, tp.Any])
             raise ValueError("an empty DictContaining matches any mapping")
         super().__init__(*args, **kwargs)
 
-    def __ne__(self, other: tp.Any) -> bool:
-        return not self == other
-
     def compare(self, other: tp.Any) -> bool:
         if not isinstance(other, Mapping):
             return self.not_implemented

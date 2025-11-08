@@ -72,6 +72,9 @@ class Matcher(tp.Generic[T], ABC):
             self._state = _MatcherState.OTHER
         return result
 
+    def __ne__(self, other: tp.Any) -> bool:
+        return not self == other
+
     def __repr__(self) -> str:
         if self._state == _MatcherState.EQUAL_ONCE:
             return repr(self._equal_to)
