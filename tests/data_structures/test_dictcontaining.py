@@ -1,16 +1,25 @@
 import typing as tp
 from collections import Counter, defaultdict
-from collections.abc import Mapping
+from collections.abc import Callable, Mapping
 
 import pytest
 
+from joythief.core import Matcher
 from joythief.data_structures import DictContaining
 from joythief.objects import InstanceOf
 
 
-def test_empty_rejects():
+@pytest.mark.parametrize(
+    "factory",
+    [
+        pytest.param(lambda: DictContaining(), id="no args"),
+        pytest.param(lambda: DictContaining({}), id="empty mapping"),
+        pytest.param(lambda: DictContaining([]), id="empty sequence"),
+    ],
+)
+def test_empty_rejects(factory: Callable[[], Matcher[tp.Any]]):
     with pytest.raises(ValueError) as exc_info:
-        _ = DictContaining()
+        _ = factory()
     assert exc_info.match("matches any mapping")
 
 
@@ -68,3 +77,31 @@ def test_does_not_equal_non_mapping(value: tp.Any):
 def test_isinstance_of_dict():
     """To get pytest to show common/differing items."""
     assert isinstance(DictContaining(foo=123), dict)
+
+
+@pytest.mark.parametrize(
+    "matcher",
+    [
+        pytest.param(DictContaining([("foo", InstanceOf(int))]), id="sequence only"),
+        pytest.param(
+            DictContaining([("foo", InstanceOf(int))], bar=InstanceOf(int)),
+            id="sequence and keyword",
+        ),
+        pytest.param(DictContaining({"foo": InstanceOf(int)}), id="mapping only"),
+        pytest.param(
+            DictContaining({"foo": InstanceOf(int)}, bar=InstanceOf(int)),
+            id="mapping and keyword",
+        ),
+        pytest.param(DictContaining(foo=InstanceOf(int)), id="keyword only"),
+        pytest.param(
+            DictContaining([], foo=InstanceOf(int)),
+            id="empty sequence and keyword",
+        ),
+        pytest.param(
+            DictContaining({}, foo=InstanceOf(int)),
+            id="empty mapping and keyword",
+        ),
+    ],
+)
+def test_supports_dict_initialisation_patterns(matcher: Matcher[tp.Any]) -> None:
+    assert dict(foo=123, bar=456) == matcher

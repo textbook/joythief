@@ -1,5 +1,5 @@
 import typing as tp
-from collections.abc import Hashable, Mapping
+from collections.abc import Hashable, Iterable, Mapping
 
 from .core import Matcher
 
@@ -7,10 +7,9 @@ from .core import Matcher
 class DictContaining(Matcher[Mapping[Hashable, tp.Any]], dict[Hashable, tp.Any]):
     """Match the specified keys in a mapping, ignoring any extra keys.
 
+    :param content: mapping or sequence of key-value pairs to include in the comparison
 
-    :param \\*args: sequence of key-value pairs to include in the comparison
-
-    :param \\**kwargs: mapping of key-value pairs to include in the comparison
+    :param \\**kwargs: additional key-value pairs to include in the comparison
 
     :raises ValueError: if no keys are specified (use
         :py:class:`~joythief.objects.InstanceOf` with :py:class:`dict` instead).
@@ -40,9 +39,23 @@ class DictContaining(Matcher[Mapping[Hashable, tp.Any]], dict[Hashable, tp.Any])
 
     """
 
-    def __init__(self, *args: tp.Any, **kwargs: tp.Any) -> None:
-        if not args and not kwargs:
+    @tp.overload
+    def __init__(self, /, **kwargs: tp.Any) -> None: ...
+
+    @tp.overload
+    def __init__(
+        self, content: Mapping[Hashable, tp.Any], /, **kwargs: tp.Any
+    ) -> None: ...
+
+    @tp.overload
+    def __init__(
+        self, content: Iterable[tuple[Hashable, tp.Any]], /, **kwargs: tp.Any
+    ) -> None: ...
+
+    def __init__(self, content: tp.Any = None, /, **kwargs: tp.Any) -> None:
+        if not content and not kwargs:
             raise ValueError("an empty DictContaining matches any mapping")
+        args: tuple[tp.Any, ...] = () if content is None else (content,)
         super().__init__(*args, **kwargs)
 
     def compare(self, other: tp.Any) -> bool:
