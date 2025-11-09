@@ -1,7 +1,10 @@
 import typing as tp
 from collections.abc import Hashable, Iterable, Mapping
 
-from .core import Matcher
+from .core import Matcher, MaybeMatcher
+from .objects import Nothing
+
+T = tp.TypeVar("T")
 
 
 class DictContaining(Matcher[Mapping[Hashable, tp.Any]], dict[Hashable, tp.Any]):
@@ -14,6 +17,10 @@ class DictContaining(Matcher[Mapping[Hashable, tp.Any]], dict[Hashable, tp.Any])
 
     :raises ValueError: if no keys are specified (use
         :py:class:`~joythief.objects.InstanceOf` with :py:class:`dict` instead).
+
+    .. versionadded:: 0.7.0
+
+    .. versionchanged:: 0.8.0 added :py:meth:`optionally`.
 
     .. code-block:: python
 
@@ -63,10 +70,57 @@ class DictContaining(Matcher[Mapping[Hashable, tp.Any]], dict[Hashable, tp.Any])
         if not isinstance(other, Mapping):
             return self.not_implemented
         is_equal: bool = True
-        for key in self:
-            if key not in other or self[key] != other[key]:
+        for key, value in self.items():
+            if key in other:
+                if self[key] != other[key]:
+                    is_equal = False
+            elif isinstance(value, _OptionalKey):
+                _ = value == Nothing()
+            else:
                 is_equal = False
         return is_equal
 
     def represent(self) -> str:
         return f"DictContaining(**{dict.__repr__(self)})"
+
+    @staticmethod
+    def optionally(value: MaybeMatcher[T]) -> MaybeMatcher[T]:
+        """Matcher factory for keys that may not be present.
+
+        .. code-block:: python
+
+            assert (
+                actual
+                == DictContaining(foo=DictContaining.optionally(123))
+            )
+
+        **Note**: this allows keys to be missing entirely, but matches the
+        value strictly. For the equivalent of :py:class:`typing.Optional`, use
+        :py:class:`~joythief.objects.Nullable`. These can be combined
+        if required, e.g. to allow the key ``"foo"`` to be either: missing;
+        present with the value ``123``; or present with the value ``None``, use:
+
+        .. code-block:: python
+
+            assert (
+                actual
+                == DictContaining(foo=DictContaining.optionally(Nullable(123)))
+            )
+
+        """
+        return _OptionalKey(value)
+
+
+class _OptionalKey(Matcher[T]):
+
+    _value: MaybeMatcher[T]
+
+    def __init__(self, value: MaybeMatcher[T], /):
+        super().__init__()
+        self._value = value
+
+    def compare(self, other: tp.Any) -> bool:
+        return tp.cast(bool, self._value == other)
+
+    def represent(self) -> str:
+        return f"DictContaining.optionally({self._value!r})"

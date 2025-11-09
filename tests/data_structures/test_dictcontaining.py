@@ -105,3 +105,12 @@ def test_isinstance_of_dict():
 )
 def test_supports_dict_initialisation_patterns(matcher: Matcher[tp.Any]) -> None:
     assert dict(foo=123, bar=456) == matcher
+
+
+def test_supports_explicitly_optional_keys():
+    matcher = DictContaining(foo=DictContaining.optionally(123))
+    assert dict(foo=123) == matcher
+    assert repr(matcher) == "{'foo': 123}"
+    assert dict() == matcher
+    assert repr(matcher) == "DictContaining(**{'foo': DictContaining.optionally(123)})"
+    assert dict(foo="bar") != matcher
