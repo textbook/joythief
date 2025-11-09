@@ -7,7 +7,8 @@ from .core import Matcher
 class DictContaining(Matcher[Mapping[Hashable, tp.Any]], dict[Hashable, tp.Any]):
     """Match the specified keys in a mapping, ignoring any extra keys.
 
-    :param content: mapping or sequence of key-value pairs to include in the comparison
+    :param content: mapping or iterable of key-value pairs to include in the
+        comparison
 
     :param \\**kwargs: additional key-value pairs to include in the comparison
 
