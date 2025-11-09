@@ -25,6 +25,20 @@ class Anything(Matcher[tp.Any]):
         return super().represent()
 
 
+class Nothing(Matcher[tp.Any]):
+    """Matches nothing at all.
+
+    .. versionadded:: 0.8.0
+
+    """
+
+    def compare(self, _: tp.Any) -> bool:
+        return False
+
+    def represent(self) -> str:
+        return super().represent()
+
+
 class InstanceOf(Matcher[T]):
     """Matches any instance of the specified type(s).
 

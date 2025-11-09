@@ -4,7 +4,7 @@ from datetime import date, datetime
 import pytest
 
 from joythief import Matcher
-from joythief.objects import Anything, InstanceOf
+from joythief.objects import Anything, InstanceOf, Nothing
 
 
 class NewType:
@@ -124,3 +124,20 @@ def test_type_anything_matches_anything() -> None:
 
 def test_type_anything_matches_type() -> None:
     _: Matcher[str] = Anything()
+
+
+@pytest.mark.parametrize(
+    "value",
+    [
+        123,
+        [],
+        4.56,
+        {},
+        date.today(),
+    ],
+    ids=lambda v: type(v).__name__,
+)
+def test_any_matches_nothing(value):
+    matcher: Matcher[tp.Any] = Nothing()
+    assert matcher != value
+    assert repr(matcher) == "Nothing()"
