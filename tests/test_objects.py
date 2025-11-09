@@ -4,7 +4,7 @@ from datetime import date, datetime
 import pytest
 
 from joythief import Matcher
-from joythief.objects import Anything, InstanceOf, Nothing
+from joythief.objects import Anything, InstanceOf, Nothing, Nullable
 
 
 class NewType:
@@ -141,3 +141,33 @@ def test_any_matches_nothing(value):
     matcher: Matcher[tp.Any] = Nothing()
     assert matcher != value
     assert repr(matcher) == "Nothing()"
+
+
+def test_nullable_matches_value():
+    matcher: Matcher[tp.Optional[str]] = Nullable(InstanceOf(str))
+    assert matcher == "foo"
+
+
+def test_nullable_matches_none():
+    matcher: Matcher[tp.Optional[str]] = Nullable(InstanceOf(str))
+    assert matcher == None
+
+
+@pytest.mark.parametrize(
+    "value",
+    [
+        123,
+        None,
+    ],
+    ids=lambda v: type(v).__name__,
+)
+def test_nullable_repr(value: tp.Optional[int]):
+    matcher = Nullable(123)
+    assert repr(matcher) == "Nullable(123)"
+    assert matcher == value
+    assert repr(matcher) == repr(value)
+
+
+def test_nullable_of_none_errors():
+    with pytest.raises(TypeError):
+        _ = Nullable(None)

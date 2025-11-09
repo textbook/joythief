@@ -2,7 +2,7 @@
 
 import typing as tp
 
-from joythief.core import Matcher
+from joythief.core import Matcher, MaybeMatcher
 
 T = tp.TypeVar("T")
 
@@ -37,6 +37,32 @@ class Nothing(Matcher[tp.Any]):
 
     def represent(self) -> str:
         return super().represent()
+
+
+class Nullable(tp.Generic[T], Matcher[tp.Optional[T]]):
+    """Adds ``None`` to the supplied value or matcher.
+
+    Matcher equivalent of :py:class:`typing.Optional`.
+
+    .. versionadded:: 0.8.0
+
+    """
+
+    _value: MaybeMatcher[T]
+
+    def __init__(self, value: MaybeMatcher[T]):
+        if value is None:
+            raise TypeError("Nullable value cannot be None")
+        super().__init__()
+        self._value = value
+
+    def compare(self, other: tp.Any) -> bool:
+        if other is None:
+            return True
+        return tp.cast(bool, self._value == other)
+
+    def represent(self) -> str:
+        return f"Nullable({self._value!r})"
 
 
 class InstanceOf(Matcher[T]):
