@@ -3,6 +3,7 @@ import typing as tp
 
 import pytest
 
+from joythief.core import Matcher
 from joythief.numbers import NaN
 
 
@@ -36,3 +37,15 @@ def test_nan_not_equal_to_others(value: tp.Any):
 
 def test_nan_repr_is_nan():
     assert repr(NaN()) == "NaN()"
+
+
+def test_type_nan_allows_float() -> None:
+    _: Matcher[float] = NaN()
+
+
+def test_type_nan_allows_int() -> None:
+    _: Matcher[float] = NaN()
+
+
+def test_type_nan_does_not_allow_other() -> None:
+    _: Matcher[str] = NaN()  # type: ignore[assignment]

@@ -6,12 +6,11 @@
 
 import math
 import typing as tp
-from numbers import Real
 
 from joythief.core import Matcher
 
 
-class NaN(Matcher[Real]):
+class NaN(Matcher[float]):
     """Matches any :py:class:`float` instance representing NaN.
 
     `IEEE 754`_ NaN (*"not a number"*) instances are, by definition, not
@@ -27,7 +26,7 @@ class NaN(Matcher[Real]):
     """
 
     def compare(self, other: tp.Any) -> bool:
-        if not isinstance(other, Real):
+        if not isinstance(other, float):
             return self.not_implemented
         return math.isnan(other)
 

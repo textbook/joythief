@@ -2,7 +2,9 @@ import typing as tp
 
 import pytest
 
-from joythief.core import Matcher
+from joythief.core import Matcher, MaybeMatcher
+from joythief.objects import InstanceOf
+from joythief.strings import StringMatching
 
 
 class EqMatcher(Matcher[int]):
@@ -57,3 +59,19 @@ def test_core_matcher_uses_default_repr_after_comparison_to_other_value():
 def test_core_matcher_permits_not_implemented(recwarn: pytest.WarningsRecorder):
     assert EqMatcher(123) != "str"
     assert len(recwarn.list) == 0
+
+
+def test_type_maybematcher_accepts_matcher() -> None:
+    _: MaybeMatcher[str] = InstanceOf(str)
+
+
+def test_type_maybematcher_accepts_value() -> None:
+    _: MaybeMatcher[str] = "some string"
+
+
+def test_type_maybematcher_does_not_accept_other_matcher() -> None:
+    _: MaybeMatcher[int] = StringMatching.uuid()  # type: ignore[assignment]
+
+
+def test_type_maybematcher_does_not_accept_other_value() -> None:
+    _: MaybeMatcher[str] = 123  # type: ignore[assignment]

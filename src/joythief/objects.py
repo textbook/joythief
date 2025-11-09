@@ -9,7 +9,7 @@ T = tp.TypeVar("T")
 Type = tp.Union[type[T], tuple[type[T], ...]]
 
 
-class Anything(Matcher[T]):
+class Anything(Matcher[tp.Any]):
     """Matches anything at all.
 
     .. versionadded:: 0.5.0

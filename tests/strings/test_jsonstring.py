@@ -3,6 +3,7 @@ import typing as tp
 
 import pytest
 
+from joythief.core import Matcher
 from joythief.strings import JsonString
 
 
@@ -41,3 +42,11 @@ def test_jsonstring_repr_shows_expected():
         repr(JsonString({"foo": ["bar", 123]})) == "JsonString({'foo': ['bar', 123]})"
     )
     assert repr(JsonString()) == "JsonString()"
+
+
+def test_type_jsonstring_matches_str() -> None:
+    _: Matcher[str] = JsonString()
+
+
+def test_type_jsonstring_does_not_match_other() -> None:
+    _: Matcher[int] = JsonString({})  # type: ignore[assignment]

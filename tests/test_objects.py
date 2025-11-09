@@ -89,6 +89,14 @@ def test_instanceof_nullable_repr():
     )
 
 
+def test_type_instanceof_matches_type() -> None:
+    _: Matcher[str] = InstanceOf(str)
+
+
+def test_type_instanceof_does_not_match_other_type() -> None:
+    _: Matcher[str] = InstanceOf(int)  # type: ignore[arg-type]
+
+
 @pytest.mark.parametrize(
     "value",
     [
@@ -108,3 +116,11 @@ def test_any_matches_anything(value):
 
 def test_any_default_repr():
     assert repr(Anything()) == "Anything()"
+
+
+def test_type_anything_matches_anything() -> None:
+    _: Matcher[tp.Any] = Anything()
+
+
+def test_type_anything_matches_type() -> None:
+    _: Matcher[str] = Anything()

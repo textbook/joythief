@@ -4,6 +4,7 @@ from uuid import uuid4
 
 import pytest
 
+from joythief.core import Matcher
 from joythief.strings import StringMatching
 
 
@@ -101,3 +102,11 @@ def test_stringmatching_iso8601_preset_matches_timestamp(value):
 )
 def test_stringmatching_iso8601_preset_does_not_match_non_timestamp(value):
     assert StringMatching.iso8601() != value
+
+
+def test_type_stringmatching_matches_str() -> None:
+    _: Matcher[str] = StringMatching.uuid()
+
+
+def test_type_stringmatching_does_not_match_other() -> None:
+    _: Matcher[int] = StringMatching.iso8601()  # type: ignore[assignment]
