@@ -8,6 +8,7 @@ from joythief.objects import Anything, InstanceOf, Nothing, Nullable
 
 from .marks import type_only
 
+
 class NewType:
     pass
 
