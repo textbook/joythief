@@ -57,6 +57,13 @@ def test_core_matcher_uses_default_repr_after_comparison_to_other_value():
     assert repr(matcher) == "EqMatcher(123)"
 
 
+def test_core_matcher_uses_default_matcher_after_notimplemented_comparison():
+    matcher = EqMatcher(123)
+    assert matcher == 123
+    assert matcher != "foo"
+    assert repr(matcher) == "EqMatcher(123)"
+
+
 def test_core_matcher_permits_not_implemented(recwarn: pytest.WarningsRecorder):
     assert EqMatcher(123) != "str"
     assert len(recwarn.list) == 0

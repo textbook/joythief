@@ -12,6 +12,7 @@ T = tp.TypeVar("T")
 
 class _MatcherState(Enum):
     UNCOMPARED = auto()
+    UNEQUAL_ONCE = auto()
     EQUAL_ONCE = auto()
     OTHER = auto()
 
@@ -52,23 +53,25 @@ class Matcher(tp.Generic[T], ABC):
 
     __PLACEHOLDER = object()
 
-    _equal_to: tp.Any
+    _compared_to: tp.Any
     _state: _MatcherState
 
     def __init__(self, *args: tp.Any, **kwargs: tp.Any) -> None:
         super().__init__(*args, **kwargs)
-        self._equal_to = self.__PLACEHOLDER
+        self._compared_to = self.__PLACEHOLDER
         self._state = _MatcherState.UNCOMPARED
 
     def __eq__(self, other: tp.Any) -> bool:
         result = self.compare(other)
-        if result is NotImplemented:
-            return result
-        if self._state == _MatcherState.UNCOMPARED and result:
-            self._state = _MatcherState.EQUAL_ONCE
-            self._equal_to = other
-        elif other is not self._equal_to:
-            self._equal_to = self.__PLACEHOLDER
+        if self._state == _MatcherState.UNCOMPARED:
+            self._compared_to = other
+            self._state = (
+                _MatcherState.EQUAL_ONCE
+                if result is not NotImplemented and result
+                else _MatcherState.UNEQUAL_ONCE
+            )
+        elif other is not self._compared_to:
+            self._compared_to = self.__PLACEHOLDER
             self._state = _MatcherState.OTHER
         return result
 
@@ -77,7 +80,7 @@ class Matcher(tp.Generic[T], ABC):
 
     def __repr__(self) -> str:
         if self._state == _MatcherState.EQUAL_ONCE:
-            return repr(self._equal_to)
+            return repr(self._compared_to)
         return self.represent()
 
     @abstractmethod
