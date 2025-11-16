@@ -18,4 +18,4 @@ from joythief.data_structures import DictContaining
     ids=lambda v: type(v).__name__,
 )
 def test_mapping_representation(mapping: Mapping[str, int]) -> None:
-    assert mapping == dict(foo=123, bar=456)
+    assert mapping == dict(foo=123, bar=456, qux=999)

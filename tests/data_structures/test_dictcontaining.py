@@ -107,6 +107,21 @@ def test_supports_dict_initialisation_patterns(matcher: Matcher[tp.Any]) -> None
     assert dict(foo=123, bar=456) == matcher
 
 
+def test_dict_acquires_keys_after_one_comparison():
+    matcher = DictContaining(foo=123, baz=789)
+    assert matcher != dict(foo=123, bar=456)
+    assert set(matcher) == {"foo", "bar", "baz"}
+    assert matcher["bar"] == 456
+
+
+def test_dict_does_not_break_on_non_mapping_comparison():
+    matcher = DictContaining(foo=123, baz=789)
+    assert matcher != "foo"
+    assert set(matcher) == {"foo", "baz"}
+    with pytest.raises(KeyError):
+        _ = matcher["bar"]
+
+
 def test_supports_explicitly_optional_keys():
     matcher = DictContaining(foo=DictContaining.optionally(123))
     assert dict(foo=123) == matcher

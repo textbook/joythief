@@ -63,7 +63,7 @@ class Matcher(tp.Generic[T], ABC):
 
     def __eq__(self, other: tp.Any) -> bool:
         result = self.compare(other)
-        if self._state == _MatcherState.UNCOMPARED:
+        if self._state is _MatcherState.UNCOMPARED:
             self._compared_to = other
             self._state = (
                 _MatcherState.EQUAL_ONCE
@@ -79,7 +79,7 @@ class Matcher(tp.Generic[T], ABC):
         return not self == other
 
     def __repr__(self) -> str:
-        if self._state == _MatcherState.EQUAL_ONCE:
+        if self._state is _MatcherState.EQUAL_ONCE:
             return repr(self._compared_to)
         return self.represent()
 
@@ -109,6 +109,10 @@ class Matcher(tp.Generic[T], ABC):
         .. __: https://docs.python.org/3/reference/datamodel.html#object.__eq__
         """
         return tp.cast(bool, NotImplemented)
+
+    @property
+    def _compared_once(self) -> bool:
+        return self._state in {_MatcherState.EQUAL_ONCE, _MatcherState.UNEQUAL_ONCE}
 
 
 MaybeMatcher: TypeAlias = tp.Union[T, Matcher[T]]

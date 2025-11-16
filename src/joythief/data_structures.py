@@ -1,5 +1,6 @@
+import itertools
 import typing as tp
-from collections.abc import Hashable, Iterable, Mapping
+from collections.abc import Hashable, Iterable, Iterator, Mapping
 
 from .core import Matcher, MaybeMatcher
 from .objects import Nothing
@@ -30,20 +31,21 @@ class DictContaining(Matcher[Mapping[Hashable, tp.Any]], dict[Hashable, tp.Any])
         )
 
     **Note**: this subclasses :py:class:`dict` so that ``pytest`` will show the
-    common and differing items, e.g.:
+    common and differing items. After a single comparison with a mapping, any
+    keys that exist in the mapping but that are *not* specified in the matcher
+    will appear to be in the matcher, with the same value. For example:
 
     .. code-block:: python
 
-        >       assert mapping == dict(foo=123, bar=456)
-        E       AssertionError: assert DictContaining(**{'foo': 123, 'bar': 0, 'baz': 789}) == {'foo': 123, 'bar': 456}
+        >       assert DictContaining(foo=123, bar=0, baz=789) == dict(foo=123, bar=456, qux=999)
+        E       AssertionError: assert DictContainin..., 'baz': 789}) == {'bar': 456, ...3, 'qux': 999}
         E
-        E         Common items:
-        E         {'foo': 123}
+        E         Omitting 2 identical items, use -vv to show
         E         Differing items:
         E         {'bar': 0} != {'bar': 456}
         E         Left contains 1 more item:
         E         {'baz': 789}
-        # ...
+        E         Use -v to get more diff
 
     """
 
@@ -65,6 +67,23 @@ class DictContaining(Matcher[Mapping[Hashable, tp.Any]], dict[Hashable, tp.Any])
             raise ValueError("an empty DictContaining matches any mapping")
         args: tuple[tp.Any, ...] = () if content is None else (content,)
         super().__init__(*args, **kwargs)
+
+    def __getitem__(self, key: Hashable) -> tp.Any:
+        try:
+            return super().__getitem__(key)
+        except KeyError as exc:
+            if self._compared_to_mapping:
+                return self._compared_to[key]
+            raise exc
+
+    def __iter__(self) -> Iterator[Hashable]:
+        own_keys = super().__iter__()
+        if self._compared_to_mapping:
+            return itertools.chain(
+                own_keys,
+                (k for k in self._compared_to if k not in self),
+            )
+        return own_keys
 
     def compare(self, other: tp.Any) -> bool:
         if not isinstance(other, Mapping):
@@ -109,6 +128,10 @@ class DictContaining(Matcher[Mapping[Hashable, tp.Any]], dict[Hashable, tp.Any])
 
         """
         return _OptionalKey(value)
+
+    @property
+    def _compared_to_mapping(self) -> bool:
+        return self._compared_once and isinstance(self._compared_to, Mapping)
 
 
 class _OptionalKey(Matcher[T]):
