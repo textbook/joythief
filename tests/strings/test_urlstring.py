@@ -5,6 +5,7 @@ import pytest
 
 from joythief.core import Matcher
 from joythief.strings import StringMatching, UrlString
+from tests.marks import type_only
 
 
 @pytest.mark.parametrize(
@@ -80,9 +81,11 @@ def test_urlstring_repr_shows_parameters_in_sensible_order(
     assert repr(UrlString(**arguments)) == expected
 
 
+@type_only
 def test_type_urlstring_matches_str() -> None:
     _: Matcher[str] = UrlString(hostname="localhost:4200")
 
 
+@type_only
 def test_type_urlstring_does_not_match_other() -> None:
     _: Matcher[int] = UrlString(scheme="https")  # type: ignore[assignment]

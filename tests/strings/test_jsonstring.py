@@ -5,6 +5,7 @@ import pytest
 
 from joythief.core import Matcher
 from joythief.strings import JsonString
+from tests.marks import type_only
 
 
 @pytest.mark.parametrize(
@@ -44,9 +45,11 @@ def test_jsonstring_repr_shows_expected():
     assert repr(JsonString()) == "JsonString()"
 
 
+@type_only
 def test_type_jsonstring_matches_str() -> None:
     _: Matcher[str] = JsonString()
 
 
+@type_only
 def test_type_jsonstring_does_not_match_other() -> None:
     _: Matcher[int] = JsonString({})  # type: ignore[assignment]

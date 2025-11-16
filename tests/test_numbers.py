@@ -5,6 +5,7 @@ import pytest
 
 from joythief.core import Matcher
 from joythief.numbers import NaN
+from tests.marks import type_only
 
 
 @pytest.fixture(
@@ -39,13 +40,16 @@ def test_nan_repr_is_nan():
     assert repr(NaN()) == "NaN()"
 
 
+@type_only
 def test_type_nan_allows_float() -> None:
     _: Matcher[float] = NaN()
 
 
+@type_only
 def test_type_nan_allows_int() -> None:
     _: Matcher[float] = NaN()
 
 
+@type_only
 def test_type_nan_does_not_allow_other() -> None:
     _: Matcher[str] = NaN()  # type: ignore[assignment]

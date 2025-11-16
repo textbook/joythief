@@ -6,6 +6,7 @@ import pytest
 
 from joythief.core import Matcher
 from joythief.strings import StringMatching
+from tests.marks import type_only
 
 
 @pytest.mark.parametrize("foo", ["foo", "fooo", "foooo", "fooooooo"])
@@ -104,9 +105,11 @@ def test_stringmatching_iso8601_preset_does_not_match_non_timestamp(value):
     assert StringMatching.iso8601() != value
 
 
+@type_only
 def test_type_stringmatching_matches_str() -> None:
     _: Matcher[str] = StringMatching.uuid()
 
 
+@type_only
 def test_type_stringmatching_does_not_match_other() -> None:
     _: Matcher[int] = StringMatching.iso8601()  # type: ignore[assignment]

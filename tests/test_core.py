@@ -5,6 +5,7 @@ import pytest
 from joythief.core import Matcher, MaybeMatcher
 from joythief.objects import InstanceOf
 from joythief.strings import StringMatching
+from tests.marks import type_only
 
 
 class EqMatcher(Matcher[int]):
@@ -61,17 +62,21 @@ def test_core_matcher_permits_not_implemented(recwarn: pytest.WarningsRecorder):
     assert len(recwarn.list) == 0
 
 
+@type_only
 def test_type_maybematcher_accepts_matcher() -> None:
     _: MaybeMatcher[str] = InstanceOf(str)
 
 
+@type_only
 def test_type_maybematcher_accepts_value() -> None:
     _: MaybeMatcher[str] = "some string"
 
 
+@type_only
 def test_type_maybematcher_does_not_accept_other_matcher() -> None:
     _: MaybeMatcher[int] = StringMatching.uuid()  # type: ignore[assignment]
 
 
+@type_only
 def test_type_maybematcher_does_not_accept_other_value() -> None:
     _: MaybeMatcher[str] = 123  # type: ignore[assignment]

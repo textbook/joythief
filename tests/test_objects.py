@@ -6,6 +6,7 @@ import pytest
 from joythief import Matcher
 from joythief.objects import Anything, InstanceOf, Nothing, Nullable
 
+from .marks import type_only
 
 class NewType:
     pass
@@ -89,10 +90,12 @@ def test_instanceof_nullable_repr():
     )
 
 
+@type_only
 def test_type_instanceof_matches_type() -> None:
     _: Matcher[str] = InstanceOf(str)
 
 
+@type_only
 def test_type_instanceof_does_not_match_other_type() -> None:
     _: Matcher[str] = InstanceOf(int)  # type: ignore[arg-type]
 
@@ -118,10 +121,12 @@ def test_any_default_repr():
     assert repr(Anything()) == "Anything()"
 
 
+@type_only
 def test_type_anything_matches_anything() -> None:
     _: Matcher[tp.Any] = Anything()
 
 
+@type_only
 def test_type_anything_matches_type() -> None:
     _: Matcher[str] = Anything()
 
