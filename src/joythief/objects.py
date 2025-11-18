@@ -65,7 +65,7 @@ class Nullable(tp.Generic[T], Matcher[tp.Optional[T]]):
         return f"Nullable({self._value!r})"
 
 
-class InstanceOf(Matcher[T]):
+class InstanceOf(tp.Generic[T], Matcher[T]):
     """Matches any instance of the specified type(s).
 
     This matcher compares the received value using
