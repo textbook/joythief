@@ -58,7 +58,7 @@ case "$1" in
   docs) docs;;
   lint) lint;;
   'lint:fix') lintFix;;
-  ship) lint; typecheck; testCover; TOX_SKIP_ENV='py39' poetryRun tox; docs; echo 'Ship it!';;
+  ship) lint; typecheck; testCover; exportDeps; TOX_SKIP_ENV='py39' poetryRun tox; docs; echo 'Ship it!';;
   test) poetryRun pytest;;
   'test:cover') testCover;;
   'test:tox') exportDeps; poetryRun tox;;
