@@ -191,3 +191,27 @@ class UrlString(Matcher[str]):
             if (value := getattr(self, f"_{name}")) is not None
         ]
         return f"UrlString({', '.join(parameters)})"
+
+
+class StringContaining(Matcher[str]):
+    """Matches any :py:class:`str` instance containing a substring.
+
+    .. versionadded:: 0.9.0
+
+    :param substring: the substring to search for
+
+    """
+
+    _substring: str
+
+    def __init__(self, substring: str):
+        super().__init__()
+        self._substring = substring
+
+    def compare(self, other: tp.Any) -> bool:
+        if not isinstance(other, str):
+            return self.not_implemented
+        return self._substring in other
+
+    def represent(self) -> str:
+        return f"{type(self).__name__}({self._substring!r})"
