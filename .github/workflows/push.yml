@@ -91,7 +91,7 @@ jobs:
       id-token: "write"
       pages: "write"
     steps:
-      - uses: "actions/deploy-pages@v4"
+      - uses: "actions/deploy-pages@v5"
         id: "deployment"
 
   deploy-pypi:
