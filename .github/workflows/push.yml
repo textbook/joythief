@@ -17,7 +17,7 @@ jobs:
       name: "coveralls"
       url: "https://coveralls.io/github/${{ github.repository }}"
     steps:
-      - uses: "actions/checkout@v5"
+      - uses: "actions/checkout@v6"
       - uses: "./.github/actions/poetry"
         with:
           save-cache: "true"
@@ -48,7 +48,7 @@ jobs:
           - "3.12"
           - "3.14"
     steps:
-      - uses: "actions/checkout@v5"
+      - uses: "actions/checkout@v6"
       - uses: "./.github/actions/poetry"
         with:
           python-version: "${{ matrix.python-version }}"
@@ -59,7 +59,7 @@ jobs:
     needs:
       - "test"
     steps:
-      - uses: "actions/checkout@v5"
+      - uses: "actions/checkout@v6"
       - uses: "./.github/actions/poetry"
         with:
           extra-groups: "docs"
@@ -69,13 +69,13 @@ jobs:
         env:
           TAG: "${{ github.ref_name }}"
       - run: poetry build
-      - uses: "actions/upload-artifact@v4"
+      - uses: "actions/upload-artifact@v7"
         with:
           if-no-files-found: "error"
           path: "dist/*"
           name: "dist"
       - run: "./bin/dev.sh docs"
-      - uses: "actions/upload-pages-artifact@v3"
+      - uses: "actions/upload-pages-artifact@v4"
         with:
           path: "docs/build/"
 
@@ -91,7 +91,7 @@ jobs:
       id-token: "write"
       pages: "write"
     steps:
-      - uses: "actions/deploy-pages@v4"
+      - uses: "actions/deploy-pages@v5"
         id: "deployment"
 
   deploy-pypi:
@@ -105,13 +105,13 @@ jobs:
     permissions:
       id-token: "write"
     steps:
-      - uses: "actions/checkout@v5"
+      - uses: "actions/checkout@v6"
       - uses: "./.github/actions/poetry"
-      - uses: "actions/download-artifact@v4"
+      - uses: "actions/download-artifact@v8"
         with:
           name: "dist"
           path: "dist/"
-      - uses: "pypa/gh-action-pypi-publish@release/v1"
+      - uses: "pypa/gh-action-pypi-publish@cef221092ed1bacb1cc03d23a2d87d1d172e277b"  # v1.14.0
 
   deploy-gh-release:
     runs-on: "ubuntu-latest"
@@ -121,8 +121,8 @@ jobs:
     permissions:
       contents: "write"
     steps:
-      - uses: "actions/checkout@v5"
-      - uses: "actions/download-artifact@v4"
+      - uses: "actions/checkout@v6"
+      - uses: "actions/download-artifact@v8"
         with:
           name: "dist"
           path: "dist/"
@@ -137,7 +137,7 @@ jobs:
     needs:
       - "deploy-pypi"
     steps:
-      - uses: "actions/checkout@v5"
+      - uses: "actions/checkout@v6"
       - uses: "actions/setup-python@v6"
         with:
           python-version: "3.13"

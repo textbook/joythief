@@ -25,12 +25,12 @@ runs:
         python3 -m pipx ensurepath
         pipx install poetry
       shell: "bash"
-    - uses: "actions/cache/restore@v4"
+    - uses: "actions/cache/restore@v5"
       if: "${{ inputs.save-cache == 'false' }}"
       with:
         key: "${{ runner.os }}-poetry-${{ hashFiles('poetry.lock') }}"
         path: "./.venv"
-    - uses: "actions/cache@v4"
+    - uses: "actions/cache@v5"
       if: "${{ inputs.save-cache == 'true' }}"
       with:
         key: "${{ runner.os }}-poetry-${{ hashFiles('poetry.lock') }}"
